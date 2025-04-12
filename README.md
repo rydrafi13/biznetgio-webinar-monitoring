@@ -99,7 +99,7 @@ Check prometheus remote write receiver was enable
 <img src="images/prometheus/2.promtheus-verify-remote-write-receiver.png" alt="prometheus remote write receiver"/>
 
 ## Config prometheus basic authentication
-To generate password on here [Bcrypt Hash Generator](bcrypt.online).
+To generate password on here <a href="https://bcrypt.online/" target="_blank">Bcrypt Hash Generator</a>.
 
 Create authentication file
 ```
