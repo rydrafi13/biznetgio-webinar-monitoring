@@ -3,7 +3,8 @@
 ## Preparation Server
 Neo Lite VPS
 
-Order on [Portal Biznetgio](portal.biznetgio.com).
+
+Order on <a href="https://portal.biznetgio.com/" target="_blank">Portal Biznetgio</a>.
 ```
 OS: Ubuntu 22.04
 Flavor: MS 4.2
