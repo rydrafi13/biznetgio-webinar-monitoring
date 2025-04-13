@@ -110,7 +110,7 @@ vim /opt/prometheus/auth.yml
 ```
 #change password and generate with hash
 basic_auth_users:
-      admin: $2y$13$Xk98Up5g2MVy1w5mku9bx.ElrthyR58s9i7LKtgTzxkiizlgl2MmO 
+      admin: $2y$12$tNkP/iiB78RggLeDjhTp6OLRcWh.EvicV5ZKV.qItZhxInhVGoUWK
 ```
 
 Check validation auth file
@@ -148,6 +148,35 @@ WantedBy=multi-user.target
 Reload daemon
 ```
 sudo systemctl daemon-reload
+```
+
+Restart prometheus
+```
+systemctl restart prometheus.service
+```
+
+Edit prometheus config file to use basic auth
+```
+vim /opt/prometheus/prometheus.yml
+```
+
+/opt/prometheus/prometheus.yml
+```
+scrape_configs:
+  - job_name: "prometheus"
+
+    #add this
+    basic_auth:
+      username: "admin"
+      password: "password"
+
+    static_configs:
+      - targets: ["localhost:9090"]
+```
+
+Check validation prometheus config file
+```
+/opt/prometheus/promtool check config /opt/prometheus/prometheus.yml
 ```
 
 Restart prometheus
@@ -246,7 +275,7 @@ alertmanager:
 Create namespace and secret for basicAuth login prometheus remoteWrite
 ```
 kubectl create ns monitoring
-kubectl create secret generic kubepromsecret --from-literal=username=admin --from-literal=password=samplepassword -n monitoring
+kubectl create secret generic kubepromsecret --from-literal=username=admin --from-literal=password=password -n monitoring
 ```
 
 Install kube-prometheus-stack
