@@ -194,3 +194,84 @@ Grafana config prometheus connection
 
 Grafana config prometheus connection test and save
 <img src="images/grafana/5.grafana-save-and-test.png" alt="grafana config prometheus test and save"/>
+
+## Setup kube-prometheus-stack on cluster
+### Install Helm package manager
+Install helm binary file
+```
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+### Setup kube-prometheus-stack with helm
+Add repo prometheus community on helm
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+Create directory kube-prometheus-stack deployment
+```
+mkdir kube-prometheus-stack
+cd kube-prometheus-stack
+```
+
+Create custom config kube-prometheus-stack deployment
+```
+vim values.yaml
+```
+
+values.yaml
+```
+prometheus:
+  prometheusSpec:
+    scrapeInterval: "1m"
+    retention: 1d
+    remoteWrite:
+    - url: http://103.175.221.72:9090/api/v1/write
+      basicAuth:
+          username:
+            name: kubepromsecret
+            key: username
+          password:
+            name: kubepromsecret
+            key: password
+grafana:
+  enabled: false
+alertmanager:
+  enabled: false
+```
+
+Create namespace and secret for basicAuth login prometheus remoteWrite
+```
+kubectl create ns monitoring
+kubectl create secret generic kubepromsecret --from-literal=username=admin --from-literal=password=samplepassword -n monitoring
+```
+
+Install kube-prometheus-stack
+```
+helm install -n monitoring kube-prometheus-stack prometheus-community/kube-prometheus-stack --create-namespace -f values.yaml
+```
+
+Create custom config prometheus job for external cluster node
+```
+vim external-node.yaml
+```
+
+external-node.yaml
+```
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: "external-node-exporter"
+        static_configs:
+          - targets:
+            - "10.10.10.x:9100"
+            - "10.10.10.x:9100"
+```
+
+Upgrade helm kube-prometheus-stack deployment
+```
+helm upgrade -n monitoring kube-prometheus-stack prometheus-community/kube-prometheus-stack -f external-node.yaml --reuse-values
+```
