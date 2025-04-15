@@ -262,7 +262,7 @@ prometheus:
     scrapeInterval: "1m"
     retention: 1d
     remoteWrite:
-    - url: http://103.175.221.72:9090/api/v1/write
+    - url: http://103.x.x.x:9090/api/v1/write
       basicAuth:
           username:
             name: kubepromsecret
