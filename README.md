@@ -1,5 +1,9 @@
 # biznetgio-webinar-monitoring
 
+## Topology
+kube-prometheus-stack + remote_write Architecture
+<img src="images/topology/topology-all.drawio.png" alt="topology"/>
+
 ## Preparation Server
 Neo Lite VPS
 
